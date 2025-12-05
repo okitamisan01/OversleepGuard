@@ -11,12 +11,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,9 +26,9 @@ fun HomeScreen(
     eventTime: String,
     eventLocation: String,
     preDepartureMinutes: Int,
-    onCustomizeClick: () -> Unit,
     onViewEventsClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onCustomizeAlarmClick: () -> Unit,
+    onCustomizeLocationClick: () -> Unit
 ) {
     var statusText by remember { mutableStateOf("On time for departure") }
 
@@ -41,13 +36,13 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF3F5FF))
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
-        // Center card
         Card(
             modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth(),
+                .align(Alignment.Center)            // centered card
+                .fillMaxWidth()
+                .heightIn(min = 650.dp),            // tall card to reduce white space
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
@@ -58,8 +53,8 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                        .padding(horizontal = 18.dp, vertical = 14.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     NextAlarmSection(
                         statusText = statusText,
@@ -68,15 +63,15 @@ fun HomeScreen(
                         preDepartureMinutes = preDepartureMinutes
                     )
 
-                    ActionButtonsRow(
+                    ActionButtonsSection(
                         onEdit = { statusText = "Editing alarm..." },
                         onSnooze = { statusText = "Alarm snoozed by 5 minutes" }
                     )
 
                     PrimaryNavButtons(
-                        onCustomizeClick = onCustomizeClick,
                         onViewEventsClick = onViewEventsClick,
-                        onSettingsClick = onSettingsClick
+                        onCustomizeAlarmClick = onCustomizeAlarmClick,
+                        onCustomizeLocationClick = onCustomizeLocationClick
                     )
                 }
             }
@@ -90,6 +85,8 @@ fun HomeScreen(
     }
 }
 
+/* ----------------------- HEADER BAR ----------------------- */
+
 @Composable
 private fun HeaderBar() {
     Box(
@@ -99,19 +96,21 @@ private fun HeaderBar() {
                 color = Color(0xFF2F7BFF),
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
             )
-            .padding(vertical = 22.dp),
+            .padding(vertical = 48.dp),  // tall blue area
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "OVERSLEEP GUARD",
             color = Color.White,
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 20.sp,
-            letterSpacing = 1.2.sp,
+            fontSize = 26.sp,
+            letterSpacing = 1.3.sp,
             textAlign = TextAlign.Center
         )
     }
 }
+
+/* ----------------------- NEXT ALARM SECTION ----------------------- */
 
 @Composable
 private fun NextAlarmSection(
@@ -124,21 +123,22 @@ private fun NextAlarmSection(
         Text(
             text = "Next Alarm",
             fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
+            fontSize = 17.sp,
             color = Color(0xFF111111)
         )
+
         Spacer(modifier = Modifier.height(4.dp))
 
-        // 🔹 Using dynamic values now
-        Text(text = "Event: $eventTime", fontSize = 14.sp, color = Color(0xFF333333))
-        Text(text = "Location: $eventLocation", fontSize = 14.sp, color = Color(0xFF333333))
+        Text(text = "Event: $eventTime", fontSize = 15.sp, color = Color(0xFF333333))
+        Text(text = "Location: $eventLocation", fontSize = 15.sp, color = Color(0xFF333333))
         Text(
             text = "Pre-departure: $preDepartureMinutes min",
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             color = Color(0xFF333333)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = "Status: $statusText",
             fontSize = 14.sp,
@@ -148,73 +148,96 @@ private fun NextAlarmSection(
     }
 }
 
+/* ----------------------- EDIT + SNOOZE SECTION ----------------------- */
+
 @Composable
-private fun ActionButtonsRow(
+private fun ActionButtonsSection(
     onEdit: () -> Unit,
     onSnooze: () -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Button(
+        PillButton(
+            label = "Edit",
             onClick = onEdit,
-            modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2F7BFF),
-                contentColor = Color.White
-            )
-        ) {
-            Text(text = "Edit")
-        }
-        Button(
+            background = Color(0xFF2F7BFF),
+            textColor = Color.White
+        )
+        PillButton(
+            label = "Snooze 5 min",
             onClick = onSnooze,
-            modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2F7BFF),
-                contentColor = Color.White
-            )
-        ) {
-            Text(text = "Snooze 5 min")
-        }
+            background = Color(0xFF2F7BFF),
+            textColor = Color.White
+        )
     }
 }
+
+/* ----------------------- 3 MAIN NAV BUTTONS ----------------------- */
 
 @Composable
 private fun PrimaryNavButtons(
-    onCustomizeClick: () -> Unit,
     onViewEventsClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onCustomizeAlarmClick: () -> Unit,
+    onCustomizeLocationClick: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        FullWidthLightButton("Customize Alarm", onCustomizeClick)
-        FullWidthLightButton("View Events", onViewEventsClick)
-        FullWidthLightButton("Settings", onSettingsClick)
+        // 1. View Events
+        PillButton(
+            label = "View Events",
+            onClick = onViewEventsClick,
+            background = Color(0xFFE3EEFF),
+            textColor = Color(0xFF23407A)
+        )
+        // 2. Customize Alarm
+        PillButton(
+            label = "Customize Alarm",
+            onClick = onCustomizeAlarmClick,
+            background = Color(0xFFE3EEFF),
+            textColor = Color(0xFF23407A)
+        )
+        // 3. Customize Location
+        PillButton(
+            label = "Customize Location",
+            onClick = onCustomizeLocationClick,
+            background = Color(0xFFE3EEFF),
+            textColor = Color(0xFF23407A)
+        )
     }
 }
 
+/* ----------------------- PILL BUTTON ----------------------- */
+
 @Composable
-private fun FullWidthLightButton(
+private fun PillButton(
     label: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    background: Color,
+    textColor: Color
 ) {
     Button(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(50),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFE3EEFF),
-            contentColor = Color(0xFF23407A)
-        )
+            containerColor = background,
+            contentColor = textColor
+        ),
+        contentPadding = PaddingValues(vertical = 10.dp)
     ) {
         Text(
             text = label,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp
         )
     }
 }
+
+/* ----------------------- GPS + BATTERY ROW ----------------------- */
 
 @Composable
 fun DeviceStatusRow(
@@ -235,14 +258,15 @@ fun DeviceStatusRow(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "GPS: ${if (gpsOn) "Active" else "Off"}  |  " +
-                    "Battery: ${batteryPct?.let { "$it%" } ?: "--"}",
+            text = "GPS: ${if (gpsOn) "Active" else "Off"}  |  Battery: ${batteryPct ?: "--"}%",
             fontSize = 12.sp,
             color = Color(0xFF313131),
             fontWeight = FontWeight.Medium
         )
     }
 }
+
+/* ----------------------- HELPERS ----------------------- */
 
 private fun getBatteryPercentage(context: Context): Int? {
     val bm = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
