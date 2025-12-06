@@ -111,7 +111,113 @@ fun AddEventScreen(
                     )
                 }
             }
+            Text(
+                text = "Time:",
+                fontSize = 28.sp
+            )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 120.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFDDEEFF))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(68.dp)
+                                .height(68.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.White)
+                                .clickable {
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = String.format("%02d", hour),
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Text(":", fontSize = 32.sp, modifier = Modifier.padding(top = 6.dp))
+                        Box(
+                            modifier = Modifier
+                                .width(68.dp)
+                                .height(68.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = String.format("%02d", minute),
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            val amBg = if (isAm) Color(0xFFE7E7E7) else Color.White
+                            val pmBg = if (!isAm) Color(0xFFD0D7E6) else Color.White
+                            Box(
+                                modifier = Modifier
+                                    .width(48.dp)
+                                    .height(34.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(amBg)
+                                    .clickable { isAm = true },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("AM", fontSize = 12.sp)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .width(48.dp)
+                                    .height(34.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(pmBg)
+                                    .clickable { isAm = false },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("PM", fontSize = 12.sp)
+                            }
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row {
+                            Column {
+                                Text("Hour", fontSize = 12.sp)
+                            }
+                        }
 
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            TextButton(onClick = {
+                            }) {
+                                Text("Cancel")
+                            }
+                            TextButton(onClick = {
+                            }) {
+                                Text("OK")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
