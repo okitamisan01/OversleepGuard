@@ -78,7 +78,6 @@ fun AddEventScreen(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Normal
             )
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -216,6 +215,65 @@ fun AddEventScreen(
                             }
                         }
                     }
+                }
+            }
+            // Repeat label and dropdown
+            Text(
+                text = "Repeat:",
+                fontSize = 28.sp
+            )
+
+            ExposedDropdownMenuBox(
+                expanded = expandedRepeat,
+                onExpandedChange = { expandedRepeat = !expandedRepeat }
+            ) {
+                OutlinedTextField(
+                    value = selectedRepeat,
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedRepeat)
+                    },
+                    label = { Text("Select") }
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expandedRepeat,
+                    onDismissRequest = { expandedRepeat = false }
+                ) {
+                    repeatOptions.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedRepeat = option
+                                expandedRepeat = false
+                            },
+                            text = { Text(option) }
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF0C2D5B))
+                        .clickable { onConfirm() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Confirm",
+                        tint = Color.White,
+                        modifier = Modifier.size(90.dp)
+                    )
                 }
             }
         }
