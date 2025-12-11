@@ -64,7 +64,8 @@ fun HomeScreen(
                     )
 
                     ActionButtonsSection(
-                        onEdit = { statusText = "Editing alarm..." },
+                        //replace with Customize Alarm
+//                        onEdit = { statusText = "Editing alarm..." },
                         onSnooze = { statusText = "Alarm snoozed by 5 minutes" }
                     )
 
@@ -152,19 +153,19 @@ private fun NextAlarmSection(
 
 @Composable
 private fun ActionButtonsSection(
-    onEdit: () -> Unit,
+//    onEdit: () -> Unit,
     onSnooze: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        PillButton(
-            label = "Edit",
-            onClick = onEdit,
-            background = Color(0xFF2F7BFF),
-            textColor = Color.White
-        )
+//        PillButton(
+//            label = "Edit",
+//            onClick = onEdit,
+//            background = Color(0xFF2F7BFF),
+//            textColor = Color.White
+//        )
         PillButton(
             label = "Snooze 5 min",
             onClick = onSnooze,
@@ -195,7 +196,7 @@ private fun PrimaryNavButtons(
         )
         // 2. Customize Alarm
         PillButton(
-            label = "Customize Alarm",
+            label = "Edit/Customize Alarm",
             onClick = onCustomizeAlarmClick,
             background = Color(0xFFE3EEFF),
             textColor = Color(0xFF23407A)

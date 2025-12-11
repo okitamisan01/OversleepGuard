@@ -14,12 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.oversleepguard.ui.theme.OversleepGuardTheme
+import com.example.oversleepguard.ui.screens.CustomizeAlarm
+import com.example.oversleepguard.ui.screens.Snooze
+//import com.example.oversleepguard.ui.screens.GPSChecking
+//import com.example.oversleepguard.ui.screens.AlarmEnd
+//import com.example.oversleepguard.ui.screens.StillAtHome
 
 enum class Screen {
     HOME,
     VIEW_EVENTS,
     CUSTOMIZE_ALARM,
-    CUSTOMIZE_LOCATION
+    CUSTOMIZE_LOCATION,
+    SNOOZE,
+    STILL_AT_HOME,
+    ALARM_END,
+    GPS_CHECKING
 }
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +55,8 @@ fun AppRoot() {
     var eventTime by remember { mutableStateOf("8:00 AM") }
     var eventLocation by remember { mutableStateOf("Gore Hall") }
     var preDepartureMinutes by remember { mutableStateOf(10) }
+    var snoozeTime by remember { mutableStateOf(5) }
+
 
     when (currentScreen) {
         Screen.HOME -> HomeScreen(
@@ -63,14 +74,37 @@ fun AppRoot() {
             onBack = { currentScreen = Screen.HOME }
         )
 
-        Screen.CUSTOMIZE_ALARM -> SimpleScreen(
-            title = "Customize Alarm Page",
-            description = "This is the Customize Alarm page. Your teammate can build the alarm settings here.",
-            onBack = { currentScreen = Screen.HOME }
-        )
+        Screen.CUSTOMIZE_ALARM -> {
+            CustomizeAlarm (
+                onBack = { currentScreen = Screen.HOME },
+                onLocationChange = {eventLocation = it},
+                locationValue = eventLocation
+            )
+        }
 
         Screen.CUSTOMIZE_LOCATION -> SimpleScreen(
             title = "Customize Location Page",
+            description = "This is the Customize Location page. Your teammate can add location settings here.",
+            onBack = { currentScreen = Screen.HOME }
+        )
+        // ----------------------------------------------------------- Events triggered by alarm going off -----------------------------------------------------------
+        Screen.SNOOZE -> Snooze(
+            onBack = { currentScreen = Screen.HOME },
+            eventTime = eventTime,
+            snoozeTime = snoozeTime
+        )
+        Screen.STILL_AT_HOME -> SimpleScreen(
+            title = "Location Error Page",
+            description = "This is the Customize Location page. Your teammate can add location settings here.",
+            onBack = { currentScreen = Screen.HOME }
+        )
+        Screen.ALARM_END -> SimpleScreen(
+            title = "Reached Location Destination Page",
+            description = "This is the Customize Location page. Your teammate can add location settings here.",
+            onBack = { currentScreen = Screen.HOME }
+        )
+        Screen.GPS_CHECKING -> SimpleScreen(
+            title = "Are you where you should be?",
             description = "This is the Customize Location page. Your teammate can add location settings here.",
             onBack = { currentScreen = Screen.HOME }
         )

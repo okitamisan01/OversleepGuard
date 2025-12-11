@@ -3,6 +3,7 @@ package com.example.oversleepguard.ui.screens
 import android.media.MediaPlayer
 import android.provider.Settings
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,15 +18,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
+import androidx.compose.material.icons.filled.Search
 
 /**
  * A screen for customizing alarm settings like pre-departure time and sound.
  *
- * @param onNavigateUp Callback to navigate back to the previous screen.
+ * @param onBack Callback to navigate back to the previous screen.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomizeAlarm(onNavigateUp: () -> Unit) {
+fun CustomizeAlarm(
+    onBack: () -> Unit,
+    locationValue: String,
+    onLocationChange: (String) -> Unit
+
+
+    ) {
     var preDepartureTime by remember { mutableStateOf(0f) }
     var preDepartureTimeText by remember { mutableStateOf("0") }
 
@@ -37,6 +45,8 @@ fun CustomizeAlarm(onNavigateUp: () -> Unit) {
     val soundNames = listOf("Default", "Alarm Clock", "Bell", "Chime", "Digital", "Rooster")
     var selectedSound by remember { mutableStateOf(soundNames[0]) }
     val mediaPlayer = remember { mutableStateOf<MediaPlayer?>(null) }
+    // This will act as the variable that will hold the location
+    var label = locationValue
 
     // Clean up the MediaPlayer when the composable is disposed
     DisposableEffect(Unit) {
@@ -56,7 +66,7 @@ fun CustomizeAlarm(onNavigateUp: () -> Unit) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateUp) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -72,9 +82,37 @@ fun CustomizeAlarm(onNavigateUp: () -> Unit) {
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            // Pre Departure Section
+            // -------------------------------- Location Section -----------------------------------------------
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Location: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                TextField(
+                    modifier = Modifier
+                        .weight(1f),
+                    value = label,
+                    onValueChange = { label = it },
+                    placeholder = { Text("Enter text…") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(50),
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = Color.Gray
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color(0xFFE3EEFF),
+                        focusedTextColor = Color(0xFF23407A),
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.height(25.dp))
+            // -------------------------------- Pre Departure Section -------------------------------------------
+
             Text("Pre Departure", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Slider(
@@ -105,7 +143,8 @@ fun CustomizeAlarm(onNavigateUp: () -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // --- Sound Section ---
+            // -------------------------------------- Sound Section -----------------------------------------------------
+
             Text("Sound", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -157,7 +196,7 @@ fun CustomizeAlarm(onNavigateUp: () -> Unit) {
 
             // Save Button
             Button(
-                onClick = onNavigateUp,
+                onClick = onBack,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -169,3 +208,27 @@ fun CustomizeAlarm(onNavigateUp: () -> Unit) {
         }
     }
 }
+//@Composable
+//private fun PillButton(
+//    label: String,
+//    onClick: () -> Unit,
+//    background: Color,
+//    textColor: Color
+//) {
+//    Button(
+//        onClick = onClick,
+//        modifier = Modifier.fillMaxWidth(),
+//        shape = RoundedCornerShape(50),
+//        colors = ButtonDefaults.buttonColors(
+//            containerColor = background,
+//            contentColor = textColor
+//        ),
+//        contentPadding = PaddingValues(vertical = 10.dp)
+//    ) {
+//        Text(
+//            text = label,
+//            fontWeight = FontWeight.SemiBold,
+//            fontSize = 14.sp
+//        )
+//    }
+//}

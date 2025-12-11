@@ -33,9 +33,9 @@ fun AppNavigation() {
                 onNavigateToSelectLocation = { navController.navigate("select_location") }
             )
         }
-        composable("customize_alarm") {
-            CustomizeAlarm(onNavigateUp = { navController.navigateUp() })
-        }
+//        composable("customize_alarm") {
+//            CustomizeAlarm(onBack = { navController.navigateUp() })
+//        }
         composable("select_location") {
             SelectLocationScreen(
                 onLocationSelected = { location ->
