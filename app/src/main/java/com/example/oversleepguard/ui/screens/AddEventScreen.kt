@@ -35,15 +35,10 @@ fun AddEventScreen(
     onBack: () -> Unit = {},
     onConfirm: () -> Unit = {}
 ) {
-    // State
     var locationText by remember { mutableStateOf("") }
-
-    // time state
-    var hour by remember { mutableStateOf(20) }      // 0..23 or 1..12 depending on UI
-    var minute by remember { mutableStateOf(0) }     // 0..59
-    var isAm by remember { mutableStateOf(false) }   // false -> PM in screenshot (20:00)
-
-    // repeat state
+    var hour by remember { mutableStateOf(20) }
+    var minute by remember { mutableStateOf(0) }
+    var isAm by remember { mutableStateOf(false) }
     val repeatOptions = listOf("Never", "Daily", "Weekly", "Monthly")
     var expandedRepeat by remember { mutableStateOf(false) }
     var selectedRepeat by remember { mutableStateOf("Select") }
@@ -217,7 +212,6 @@ fun AddEventScreen(
                     }
                 }
             }
-            // Repeat label and dropdown
             Text(
                 text = "Repeat:",
                 fontSize = 28.sp
