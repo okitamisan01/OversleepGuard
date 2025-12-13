@@ -16,8 +16,11 @@ import androidx.compose.ui.unit.dp
 import com.example.oversleepguard.ui.theme.OversleepGuardTheme
 import com.example.oversleepguard.ui.screens.CustomizeAlarm
 import com.example.oversleepguard.ui.screens.Snooze
+import com.example.oversleepguard.ui.screens.StillAtHome
+import com.example.oversleepguard.ui.screens.gpsChecking
+
 //import com.example.oversleepguard.ui.screens.GPSChecking
-//import com.example.oversleepguard.ui.screens.AlarmEnd
+import com.example.oversleepguard.ui.screens.alarmEnd
 //import com.example.oversleepguard.ui.screens.StillAtHome
 
 enum class Screen {
@@ -53,6 +56,7 @@ fun AppRoot() {
 
     // Dynamic event data (you can later update this from other screens)
     var eventTime by remember { mutableStateOf("8:00 AM") }
+    var eventTimeInt by remember { mutableStateOf(800) }
     var eventLocation by remember { mutableStateOf("Gore Hall") }
     var preDepartureMinutes by remember { mutableStateOf(10) }
     var snoozeTime by remember { mutableStateOf(5) }
@@ -74,8 +78,7 @@ fun AppRoot() {
             onBack = { currentScreen = Screen.HOME }
         )
 
-        Screen.CUSTOMIZE_ALARM -> {
-            CustomizeAlarm (
+        Screen.CUSTOMIZE_ALARM -> { CustomizeAlarm (
                 onBack = { currentScreen = Screen.HOME },
                 onLocationChange = {eventLocation = it},
                 locationValue = eventLocation
@@ -93,20 +96,22 @@ fun AppRoot() {
             eventTime = eventTime,
             snoozeTime = snoozeTime
         )
-        Screen.STILL_AT_HOME -> SimpleScreen(
-            title = "Location Error Page",
-            description = "This is the Customize Location page. Your teammate can add location settings here.",
-            onBack = { currentScreen = Screen.HOME }
+        Screen.STILL_AT_HOME -> StillAtHome(
+            onBack = { currentScreen = Screen.HOME },
+            onSnooze = { currentScreen = Screen.SNOOZE },
+            onLocation = { currentScreen = Screen.GPS_CHECKING },
+            eventTime = eventTimeInt,
+            eventLocation = eventLocation
         )
-        Screen.ALARM_END -> SimpleScreen(
-            title = "Reached Location Destination Page",
-            description = "This is the Customize Location page. Your teammate can add location settings here.",
-            onBack = { currentScreen = Screen.HOME }
+        Screen.ALARM_END -> alarmEnd(
+            onBack = { currentScreen = Screen.HOME },
+            eventTime = eventTimeInt
         )
-        Screen.GPS_CHECKING -> SimpleScreen(
-            title = "Are you where you should be?",
-            description = "This is the Customize Location page. Your teammate can add location settings here.",
-            onBack = { currentScreen = Screen.HOME }
+        Screen.GPS_CHECKING -> gpsChecking(
+            onBack = { currentScreen = Screen.HOME },
+            onLocationFail = { currentScreen = Screen.STILL_AT_HOME },
+            onLocationSuccess = { currentScreen = Screen.ALARM_END },
+            eventLocation = eventLocation
         )
     }
 }
