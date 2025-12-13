@@ -13,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.oversleepguard.ui.screens.AddEventScreen
+import com.example.oversleepguard.ui.screens.CalenderScreen
 import com.example.oversleepguard.ui.theme.OversleepGuardTheme
 import com.example.oversleepguard.ui.screens.CustomizeAlarm
 import com.example.oversleepguard.ui.screens.Snooze
@@ -28,6 +30,7 @@ enum class Screen {
     VIEW_EVENTS,
     CUSTOMIZE_ALARM,
     CUSTOMIZE_LOCATION,
+    ADD_EVENTS,
     SNOOZE,
     STILL_AT_HOME,
     ALARM_END,
@@ -72,10 +75,12 @@ fun AppRoot() {
             onCustomizeLocationClick = { currentScreen = Screen.CUSTOMIZE_LOCATION }
         )
 
-        Screen.VIEW_EVENTS -> SimpleScreen(
-            title = "View Events Page",
-            description = "This is the View Events page. Your teammate can replace this with real event UI.",
-            onBack = { currentScreen = Screen.HOME }
+        Screen.VIEW_EVENTS -> CalenderScreen(
+            onAddEventClick = {currentScreen = Screen.ADD_EVENTS}
+        )
+
+        Screen.ADD_EVENTS->AddEventScreen(
+            onBack = {currentScreen = Screen.VIEW_EVENTS}
         )
 
         Screen.CUSTOMIZE_ALARM -> { CustomizeAlarm (
@@ -115,6 +120,7 @@ fun AppRoot() {
         )
     }
 }
+
 
 @Composable
 fun SimpleScreen(

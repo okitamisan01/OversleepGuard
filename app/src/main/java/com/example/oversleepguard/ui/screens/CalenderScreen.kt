@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import java.util.*
 
 @Composable
-fun CalendarScreen(
+fun CalenderScreen(
     monthName: String = "January",
     daysInMonth: Int = 31,
     startOffset: Int = 3,
@@ -32,7 +32,7 @@ fun CalendarScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = null)
+                Icon(Icons.Default.ArrowBack, contentDescription = null)
             Text(
                 text = monthName,
                 style = MaterialTheme.typography.headlineMedium
@@ -98,9 +98,10 @@ fun CalendarGrid(
 
 @Preview(showBackground = true, heightDp = 900)
 @Composable
-fun CalendarScreenPreview() {
+fun CalenderScreenPreview() {
     MaterialTheme {
-        CalendarScreen()
+        CalenderScreen()
     }
 }
+
 

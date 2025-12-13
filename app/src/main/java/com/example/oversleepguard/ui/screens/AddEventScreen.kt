@@ -193,22 +193,6 @@ fun AddEventScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row {
-                            Column {
-                                Text("Hour", fontSize = 12.sp)
-                            }
-                        }
-
-                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            TextButton(onClick = {
-                            }) {
-                                Text("Cancel")
-                            }
-                            TextButton(onClick = {
-                            }) {
-                                Text("OK")
-                            }
-                        }
                     }
                 }
             }
@@ -259,7 +243,7 @@ fun AddEventScreen(
                         .size(150.dp)
                         .clip(CircleShape)
                         .background(Color(0xFF0C2D5B))
-                        .clickable { onConfirm() },
+                        .clickable { onBack() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
