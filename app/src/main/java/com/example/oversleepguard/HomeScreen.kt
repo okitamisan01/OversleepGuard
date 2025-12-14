@@ -64,8 +64,6 @@ fun HomeScreen(
                     )
 
                     ActionButtonsSection(
-                        //replace with Customize Alarm
-//                        onEdit = { statusText = "Editing alarm..." },
                         onSnooze = { statusText = "Alarm snoozed by 5 minutes" }
                     )
 
@@ -149,23 +147,16 @@ private fun NextAlarmSection(
     }
 }
 
-/* ----------------------- EDIT + SNOOZE SECTION ----------------------- */
+/* ----------------------- SNOOZE SECTION ----------------------- */
 
 @Composable
 private fun ActionButtonsSection(
-//    onEdit: () -> Unit,
     onSnooze: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-//        PillButton(
-//            label = "Edit",
-//            onClick = onEdit,
-//            background = Color(0xFF2F7BFF),
-//            textColor = Color.White
-//        )
         PillButton(
             label = "Snooze 5 min",
             onClick = onSnooze,
@@ -274,7 +265,6 @@ private fun getBatteryPercentage(context: Context): Int? {
     val level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     return if (level > 0) level else null
 }
-
 private fun isLocationEnabled(context: Context): Boolean {
     val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||

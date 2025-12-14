@@ -3,8 +3,12 @@ package com.example.oversleepguard
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,15 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.oversleepguard.ui.screens.AddEventScreen
 import com.example.oversleepguard.ui.screens.CalenderScreen
-import com.example.oversleepguard.ui.theme.OversleepGuardTheme
 import com.example.oversleepguard.ui.screens.CustomizeAlarm
+import com.example.oversleepguard.ui.screens.CustomizeLocation
+import com.example.oversleepguard.ui.screens.SelectLocationScreen
 import com.example.oversleepguard.ui.screens.Snooze
 import com.example.oversleepguard.ui.screens.StillAtHome
-import com.example.oversleepguard.ui.screens.gpsChecking
-
-//import com.example.oversleepguard.ui.screens.GPSChecking
 import com.example.oversleepguard.ui.screens.alarmEnd
-//import com.example.oversleepguard.ui.screens.StillAtHome
+import com.example.oversleepguard.ui.screens.gpsChecking
+import com.example.oversleepguard.ui.theme.OversleepGuardTheme
+import com.google.android.gms.maps.model.LatLng
 
 enum class Screen {
     HOME,
@@ -34,7 +38,8 @@ enum class Screen {
     SNOOZE,
     STILL_AT_HOME,
     ALARM_END,
-    GPS_CHECKING
+    GPS_CHECKING,
+    SELECT_LOCATION
 }
 
 class MainActivity : ComponentActivity() {
@@ -63,6 +68,7 @@ fun AppRoot() {
     var eventLocation by remember { mutableStateOf("Gore Hall") }
     var preDepartureMinutes by remember { mutableStateOf(10) }
     var snoozeTime by remember { mutableStateOf(5) }
+    var selectedLocation by remember { mutableStateOf<LatLng?>(null) }
 
 
     when (currentScreen) {
@@ -80,7 +86,8 @@ fun AppRoot() {
         )
 
         Screen.ADD_EVENTS->AddEventScreen(
-            onBack = {currentScreen = Screen.VIEW_EVENTS}
+            onBack = {currentScreen = Screen.VIEW_EVENTS},
+            onConfirm = {currentScreen = Screen.HOME}
         )
 
         Screen.CUSTOMIZE_ALARM -> { CustomizeAlarm (
@@ -90,10 +97,17 @@ fun AppRoot() {
             )
         }
 
-        Screen.CUSTOMIZE_LOCATION -> SimpleScreen(
-            title = "Customize Location Page",
-            description = "This is the Customize Location page. Your teammate can add location settings here.",
-            onBack = { currentScreen = Screen.HOME }
+        Screen.CUSTOMIZE_LOCATION -> CustomizeLocation(
+            selectedLocation = selectedLocation,
+            onNavigateUp = { currentScreen = Screen.HOME },
+            onNavigateToSelectLocation = { currentScreen = Screen.SELECT_LOCATION }
+        )
+
+        Screen.SELECT_LOCATION -> SelectLocationScreen(
+            onLocationSelected = { location ->
+                selectedLocation = location
+                currentScreen = Screen.CUSTOMIZE_LOCATION
+            }
         )
         // ----------------------------------------------------------- Events triggered by alarm going off -----------------------------------------------------------
         Screen.SNOOZE -> Snooze(

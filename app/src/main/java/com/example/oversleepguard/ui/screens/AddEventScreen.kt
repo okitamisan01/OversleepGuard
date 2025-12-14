@@ -121,8 +121,7 @@ fun AddEventScreen(
                                 .height(68.dp)
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(Color.White)
-                                .clickable {
-                                },
+                                .clickable {},
                             contentAlignment = Alignment.Center
                         ) {
                             OutlinedTextField(
@@ -256,7 +255,7 @@ fun AddEventScreen(
                         .size(150.dp)
                         .clip(CircleShape)
                         .background(Color(0xFF0C2D5B))
-                        .clickable { onBack() },
+                        .clickable { onConfirm() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -278,4 +277,3 @@ fun AddEventScreenPreview() {
         AddEventScreen()
     }
 }
-

@@ -159,4 +159,3 @@ fun MapIllustration(modifier: Modifier = Modifier) {
         drawLine(roadColor, start = Offset(0f, size.height * 0.5f), end = Offset(size.width, size.height * 0.4f), strokeWidth = 12f)
     }
 }
-
