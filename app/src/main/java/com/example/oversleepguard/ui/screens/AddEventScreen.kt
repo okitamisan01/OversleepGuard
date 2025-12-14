@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,42 +75,28 @@ fun AddEventScreen(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Normal
             )
-            Box(
+            OutlinedTextField(
+                value = locationText,
+                onValueChange = { locationText = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(44.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(Color(0xFFE6F0FF))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "menu"
-                    )
-
-
-                    Text(
-                        text = if (locationText.isBlank()) "Search location" else locationText,
-                        modifier = Modifier.weight(1f).padding(start = 12.dp),
-                        textAlign = TextAlign.Center
-                    )
-
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "search"
-                    )
-                }
-            }
-            Text(
-                text = "Time:",
-                fontSize = 28.sp
+                    .height(56.dp),
+                placeholder = { Text("Search location") },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Menu, contentDescription = null)
+                },
+                trailingIcon = {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                },
+                shape = RoundedCornerShape(20.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = Color(0xFFE6F0FF),
+                    focusedContainerColor = Color(0xFFE6F0FF),
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
+                )
             )
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -137,11 +125,23 @@ fun AddEventScreen(
                                 },
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = String.format("%02d", hour),
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold
+                            OutlinedTextField(
+                                value = hour.toString(),
+                                onValueChange = {
+                                    it.toIntOrNull()?.let { newHour ->
+                                        if (newHour in 1..12) hour = newHour
+                                    }
+                                },
+                                singleLine = true,
+                                textStyle = LocalTextStyle.current.copy(
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                ),
+                                modifier = Modifier.width(68.dp),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
+
                         }
                         Text(":", fontSize = 32.sp, modifier = Modifier.padding(top = 6.dp))
                         Box(
@@ -152,10 +152,21 @@ fun AddEventScreen(
                                 .background(Color.White),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = String.format("%02d", minute),
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold
+                            OutlinedTextField(
+                                value = minute.toString().padStart(2, '0'),
+                                onValueChange = {
+                                    it.toIntOrNull()?.let { newMinute ->
+                                        if (newMinute in 0..59) minute = newMinute
+                                    }
+                                },
+                                singleLine = true,
+                                textStyle = LocalTextStyle.current.copy(
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                ),
+                                modifier = Modifier.width(68.dp),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
                         }
                         Spacer(modifier = Modifier.width(12.dp))
@@ -209,7 +220,9 @@ fun AddEventScreen(
                     value = selectedRepeat,
                     onValueChange = {},
                     readOnly = true,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedRepeat)
                     },
